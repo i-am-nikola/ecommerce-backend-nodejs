@@ -1,7 +1,6 @@
 'use strict'
 
 const config = require('../configs/config.mongodb')
-console.log('zzz', config );
 
 const mongoose = require('mongoose');
 const connectString = `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`;

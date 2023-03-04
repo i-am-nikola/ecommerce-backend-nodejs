@@ -1,8 +1,11 @@
 'use strict'
 
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
+const { createTokenPair } = require('../auth/authUtils');
 const shopModel = require("../models/shop.model");
+const { getInfoData } = require('../utils');
+const KeyTokenService = require('./keyToken.service');
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -13,7 +16,7 @@ const RoleShop = {
 
 class AccessService {
 
-    static signUp = async ({ name, email, password }) => {
+    signUp = async ({ name, email, password }) => {
         try {
             const holderShop = await shopModel.findOne({ email }).lean();
             if (holderShop) {
@@ -23,7 +26,7 @@ class AccessService {
                 }
             }
             const passwordHash = await bcrypt.hash(password, 10)
-            const newShop = shopModel.create({
+            const newShop = await shopModel.create({
                 name,
                 email,
                 password: passwordHash,
@@ -31,10 +34,54 @@ class AccessService {
             })
             if (newShop) {
                 // create privateKey, publicKey
-                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-                    modulusLength: 4096
+                // const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+                //     modulusLength: 4096,
+                //     publicKeyEncoding: {
+                //         type: 'pkcs1',
+                //         format: 'pem'
+                //     },
+                //     privateKeyEncodeIng: {
+                //         type: 'pkcs1',
+                //         format: 'pem'
+                //     }
+                // })
+                const privateKey = crypto.randomBytes(64).toString('hex');
+                const publicKey = crypto.randomBytes(64).toString('hex');
+
+                console.log({privateKey, publicKey, newShop: newShop});
+
+                const publicKeyString = await KeyTokenService.createKeyToken({
+                    userId: newShop._id,
+                    privateKey,
+                    publicKey
                 })
-                console.log({privateKey, publicKey });
+
+                if (!publicKeyString) {
+                    return {
+                        code: 'xxxx',
+                        message: 'publicKeyString Error'
+                    }
+                }
+                // console.log('publicKeyString :>> ', publicKeyString);
+
+                // const publicKeyObject = crypto.createPublicKey(publicKeyString)
+                // console.log('publicKeyObject :>> ', publicKeyObject);
+
+                const tokens = await createTokenPair({userId: newShop._id, email}, publicKey, privateKey)
+                console.log('Create token success :>> ', tokens);
+
+                return {
+                    code: 201,
+                    metadata: {
+                        shop: getInfoData({fields: ['_id', 'name', 'email'], object: newShop}),
+                        tokens
+                    }
+                }
+            }
+            return {
+                code: 200,
+                metadata: null
+
             }
         } catch (error) {
             return {
@@ -46,4 +93,4 @@ class AccessService {
     }
 }
 
-module.exports = new AccessService;
+module.exports = new AccessService();
