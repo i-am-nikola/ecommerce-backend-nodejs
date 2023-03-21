@@ -9,6 +9,17 @@ x-api-key: 4a6248397fb205f99d71e31522ea6fea01b749c1855fa31fca04585d2ab3dc27157ab
 
 {
     "name": "Shop TIPs",
+    "email": "shopdev@gmail.com",
+    "password": "123123"
+}
+
+### login
+POST {{url_dev}}/shop/login
+content-type: application/json
+x-api-key: 4a6248397fb205f99d71e31522ea6fea01b749c1855fa31fca04585d2ab3dc27157ab0f11de33b9fac83953becf08ffb21da199e1b9a818e6f83b7cd39d96a98
+
+{
     "email": "shoptips6@gmail.com",
     "password": "123123"
 }
+

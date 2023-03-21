@@ -1,21 +1,50 @@
 'use strict'
 
+const { Types } = require("mongoose");
 const keyTokenModel = require("../models/keyToken.model");
 
 class KeyTokenService {
-    static createKeyToken = async ({userId, privateKey, publicKey}) => {
+    static createKeyToken = async ({userId, privateKey, publicKey, refreshToken}) => {
         try {
-            // const publicKeyString = publicKey.toString();
-            const tokens = await keyTokenModel.create({
-                user: userId,
-                // publicKey: publicKeyString
-                privateKey,
-                publicKey
-            })
+            // const tokens = await keyTokenModel.create({
+            //     user: userId,
+            //     privateKey,
+            //     publicKey
+            // })
+            // return tokens ? tokens.publicKey : null;
+            const filter = {user: userId}, update = {
+                publicKey, privateKey, refreshTokensUsed: [], refreshToken
+            }, options = {upsert: true, new: true}
+
+            const tokens = await keyTokenModel.findOneAndUpdate(filter, update, options);
             return tokens ? tokens.publicKey : null;
         } catch (error) {
             return error;
         }
+    }
+
+    static findByUserId = async (userId) => {
+
+        return await keyTokenModel.findOne({user: userId})
+    }
+
+    static removeKeyById = async (id) => {
+        return await keyTokenModel.remove(id);
+    }
+
+    static findByRefreshTokenUsed = async (refreshToken) => {
+        return await keyTokenModel.findOne({refreshTokensUsed: refreshToken}).lean();
+    }
+
+    static findByRefreshToken = async (refreshToken) => {
+        return await keyTokenModel.findOne({refreshToken});
+
+    }
+
+    static deleteKeyById = async (userId) => {
+        console.log("🚀 ~ file: keyToken.service.js:45 ~ KeyTokenService ~ staticdeleteKeyById ~ userId:", userId)
+
+        return await keyTokenModel.deleteOne({user: userId})
     }
 }
 
