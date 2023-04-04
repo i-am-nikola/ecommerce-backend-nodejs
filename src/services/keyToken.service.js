@@ -42,7 +42,6 @@ class KeyTokenService {
     }
 
     static deleteKeyById = async (userId) => {
-        console.log("🚀 ~ file: keyToken.service.js:45 ~ KeyTokenService ~ staticdeleteKeyById ~ userId:", userId)
 
         return await keyTokenModel.deleteOne({user: userId})
     }

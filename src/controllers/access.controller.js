@@ -18,7 +18,6 @@ class AccessController {
     }
 
     logout = async (req, res, next) => {
-        console.log('req123 :>> ', req);
         new SuccessResponse({
             message: 'Logout success!',
             metadata: await accessService.logout(req.keyStore)

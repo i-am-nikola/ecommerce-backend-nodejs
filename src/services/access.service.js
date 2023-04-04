@@ -108,7 +108,6 @@ class AccessService {
                 const publicKey = crypto.randomBytes(64).toString('hex');
 
                 // Public key cryptoGraphy Standards!
-                console.log({privateKey, publicKey, newShop: newShop}); // save collection KeyStore
                 const keyStore = await KeyTokenService.createKeyToken({
                     userId: newShop._id,
                     privateKey,
@@ -122,10 +121,6 @@ class AccessService {
                         message: 'publicKeyString Error'
                     }
                 }
-                // console.log('publicKeyString :>> ', publicKeyString);
-
-                // const publicKeyObject = crypto.createPublicKey(publicKeyString)
-                // console.log('publicKeyObject :>> ', publicKeyObject);
 
                 const tokens = await createTokenPair({userId: newShop._id, email}, publicKey, privateKey)
                 console.log('Create token success :>> ', tokens);
