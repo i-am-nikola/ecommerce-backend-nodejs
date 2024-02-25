@@ -95,7 +95,7 @@ const clothingSchema = new Schema({
 // define the product type = electronic
 
 const electronicSchema = new Schema({
-    manufacturer: {
+    manufacturer: { // nha may san xuat
         type: String,
         required: true
     },
@@ -117,7 +117,7 @@ const furnitureSchema = new Schema({
     product_shop: {type: Schema.Types.ObjectId, ref: 'Shop'}
 }, {
     timestamps: true,
-    collection: 'furnitures'
+    collection: 'Furnitures'
 })
 
 //Export the model
@@ -126,7 +126,4 @@ module.exports = {
     electronic: model('Electronic', electronicSchema),
     clothing: model('Clothing', clothingSchema),
     furniture: model('Furniture', furnitureSchema),
-
-
-
 };

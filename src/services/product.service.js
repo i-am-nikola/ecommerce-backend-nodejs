@@ -45,7 +45,11 @@ class Product {
 class Clothing extends Product {
 
     async createProduct() {
-        const newClothing = await clothing.create(this.product_attributes);
+        console.log(123123, this.product_shop);
+        const newClothing = await clothing.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        });
         console.log("🚀 ~ file: product.service.js:49 ~ Clothing ~ createProduct ~ newClothing:", newClothing)
         if (!newClothing) throw BadRequestError('Create new clothing error');
 
@@ -59,13 +63,16 @@ class Clothing extends Product {
 class Electronic extends Product {
 
     async createProduct() {
+        console.log(123123444, this.product_shop);
         const newElectronic = await electronic.create({
             ...this.product_attributes,
             product_shop: this.product_shop
         });
+        console.log("🚀 ~ Electronic ~ createProduct ~ newElectronic:", newElectronic)
         if (!newElectronic) throw BadRequestError('Create new electronic error');
 
         const newProduct = await super.createProduct(newElectronic._id);
+        console.log("🚀 ~ Electronic ~ createProduct ~ newProduct:", newProduct)
         if (!newProduct) throw BadRequestError('Create new product error');
         return newProduct;
     }
