@@ -19,6 +19,9 @@ const RoleShop = {
 
 class AccessService {
 
+    /**
+     * check token used?
+     */
     handleRefreshToken = async ({keyStore, user, refreshToken}) => {
 
         const {userId, email} = user;
@@ -36,7 +39,6 @@ class AccessService {
         // create cap token moi
         const tokens = await createTokenPair({userId, email}, keyStore.publicKey, keyStore.privateKey)
 
-        // update token
         await keyStore.update({
             $set: {
                 refreshToken: tokens.refreshToken
@@ -74,12 +76,15 @@ class AccessService {
         // 3. create AT and RT and save
         const privateKey = crypto.randomBytes(64).toString('hex');
         const publicKey = crypto.randomBytes(64).toString('hex');
+
         // 4. generate token
         const {_id: userId} = foundShop;
         const tokens = await createTokenPair({userId, email}, publicKey, privateKey)
         await KeyTokenService.createKeyToken({
             refreshToken: tokens.refreshToken,
-            privateKey, publicKey, userId
+            privateKey,
+            publicKey,
+            userId
         })
         // 5. get data return login
         return {
@@ -115,7 +120,6 @@ class AccessService {
                 })
 
                 if (!keyStore) {
-
                     return {
                         code: 'xxxx',
                         message: 'publicKeyString Error'
@@ -123,6 +127,7 @@ class AccessService {
                 }
 
                 const tokens = await createTokenPair({userId: newShop._id, email}, publicKey, privateKey)
+
                 console.log('Create token success :>> ', tokens);
 
                 return {

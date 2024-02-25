@@ -6,15 +6,11 @@ const keyTokenModel = require("../models/keyToken.model");
 class KeyTokenService {
     static createKeyToken = async ({userId, privateKey, publicKey, refreshToken}) => {
         try {
-            // const tokens = await keyTokenModel.create({
-            //     user: userId,
-            //     privateKey,
-            //     publicKey
-            // })
-            // return tokens ? tokens.publicKey : null;
-            const filter = {user: userId}, update = {
+            const filter = {user: userId}
+            const update = {
                 publicKey, privateKey, refreshTokensUsed: [], refreshToken
-            }, options = {upsert: true, new: true}
+            };
+            const options = {upsert: true, new: true}
 
             const tokens = await keyTokenModel.findOneAndUpdate(filter, update, options);
             return tokens ? tokens.publicKey : null;
@@ -24,8 +20,7 @@ class KeyTokenService {
     }
 
     static findByUserId = async (userId) => {
-
-        return await keyTokenModel.findOne({user: userId})
+        return await keyTokenModel.findOne({user: Types.ObjectId(userId)});
     }
 
     static removeKeyById = async (id) => {
@@ -42,7 +37,6 @@ class KeyTokenService {
     }
 
     static deleteKeyById = async (userId) => {
-
         return await keyTokenModel.deleteOne({user: userId})
     }
 }
