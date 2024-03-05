@@ -16,7 +16,7 @@
         for (let i = 0; i < retryTimes.length; i++) {
             // tao 1 key, user nao nam giu duoc vao thanh toan
             const result = await setnxAsync(key, expireTime);
-            console.log(`result:::`, result);
+            console .log(`result:::`, result);
             if (result === 1) {
                 // thao tac voi inventory
                 const isReservation= await reservationInventory({productId, quantity, cartId})
